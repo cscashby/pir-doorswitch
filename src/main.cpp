@@ -1,12 +1,20 @@
 #include <Arduino.h>
-#include <TinyPICO.h>
 
-TinyPICO tp = TinyPICO();
+#include "config.h"       // My configuration parameters, etc.
+#include "Network.h"
+
+// We're using singletons here as the classes need to use each others' methods
+static Network& net = Network::get();
 
 void setup() {
-  // put your setup code here, to run once:
+  #ifdef DEBUG
+    Serial.begin(SERIAL_BAUD);
+    while(!Serial) { delay(100); }
+  #endif
+  
+  net.begin();
 }
 
 void loop() {
-  tp.DotStar_CycleColor(5);
+  net.loop();
 }

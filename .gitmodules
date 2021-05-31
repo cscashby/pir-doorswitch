@@ -1,3 +1,0 @@
-[submodule "modules/tinypico-arduino"]
-	path = modules/tinypico-arduino
-	url = https://github.com/tinypico/tinypico-arduino.git
