@@ -10,7 +10,7 @@
 // ==== Network configuration
 // WifiManager configuration
 #define WM_CONNECT_TIMEOUT  10  // seconds
-#define WM_PORTAL_TIMEOUT   300
+#define WM_PORTAL_TIMEOUT   30
 #define WM_SSID             "pir-doorswitch"
 #define WM_KEY              "doorswitch"
 

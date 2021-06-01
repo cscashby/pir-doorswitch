@@ -4,5 +4,11 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"*.html.j2": "html",
+			"*.css": "css",
+			"functional": "cpp"
+		}
+	}
 }

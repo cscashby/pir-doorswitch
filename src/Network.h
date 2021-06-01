@@ -17,11 +17,15 @@ class Network {
     Network();
     void begin();
     void loop();
+    void reset();
 
     bool isConnected() { return connected; }
     bool isPortalActive() { return portalActive; }
 
-    static Network& get() {
+    static AsyncWebServer getServer();
+
+    static Network &get()
+    {
       static Network instance;
       return instance;
     }                
@@ -30,6 +34,11 @@ class Network {
     bool connected = false;
 
     long lastConnected = -1; // millis() when device was last online
+    long lastDisconnected = -1; // millis() when device was last offline
+
+    static AsyncWebServer *server; // (NET_PORT);
+    DNSServer *dns;
+    AsyncWiFiManager *wifiManager; // (&server, &dns);
 };
 
 #endif // Network_h
