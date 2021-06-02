@@ -2,6 +2,7 @@
 #define Config_h
 
 #include <Arduino.h>
+#include <Timezone.h>
 
 // ==== General setup
 #define SERIAL_BAUD         460800
@@ -25,6 +26,23 @@
 //#define WM_RESET_WIFI
 
 #define NET_PORT            80
+
+// ==== Monitor configuration
+// Pins (GPIO numbers)
+#define PIN_STATUS_LED      16  // D0
+#define PIN_WIFI_LED        2   // Builtin ESP-12 LED
+
+// Monitor timings
+#define MONITOR_TICKER      100 // ms base timer
+#define MONITOR_TIME        100 // Counts of ticker to debug print time
+#define MONITOR_OKCOUNTER   20  // Counts of ticker to identify OK
+#define MONITOR_WAITCOUNTER 1   // Counts of ticker to identify 'user intervention required'
+
+// Localization settings
+// United Kingdom (London, Belfast)
+#define BST                 (TimeChangeRule){"BST", Last, Sun, Mar, 1, 60}  // British Summer Time
+#define GMT                 (TimeChangeRule){"GMT", Last, Sun, Mar, 1, 60}  // Standard Time
+#define TIMEZONE            Timezone(BST, GMT)
 
 // ==== Debug stuff
 #ifdef DEBUG
@@ -89,4 +107,5 @@
   Serial.print(':'); \
   Serial.print(__LINE__); \
   Serial.println(")"); };
-#endif
+
+#endif // Config_h

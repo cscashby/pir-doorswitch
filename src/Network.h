@@ -4,11 +4,16 @@
 #ifdef ESP8266
   #include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
 #else
-#include <WiFi.h>
+  #include <WiFi.h>
 #endif
 
 #include <ESPAsyncWebServer.h>     //Local WebServer used to serve the configuration portal
 #include <ESPAsyncWiFiManager.h>          //https://github.com/tzapu/WiFiManager WiFi Configuration Magic
+
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+
+#include <Timezone.h>
 
 #include "config.h"
 
@@ -23,6 +28,7 @@ class Network {
     bool isPortalActive() { return portalActive; }
 
     static AsyncWebServer getServer();
+    NTPClient getNTPClient();
 
     static Network &get()
     {
@@ -36,9 +42,12 @@ class Network {
     long lastConnected = -1; // millis() when device was last online
     long lastDisconnected = -1; // millis() when device was last offline
 
-    static AsyncWebServer *server; // (NET_PORT);
+    static AsyncWebServer *server;
     DNSServer *dns;
-    AsyncWiFiManager *wifiManager; // (&server, &dns);
+    AsyncWiFiManager *wifiManager;
+
+    WiFiUDP ntpUDP;
+    NTPClient *timeClient;
 };
 
 #endif // Network_h

@@ -7,9 +7,8 @@ Network::Network() {
   
 }
 
-AsyncWebServer Network::getServer() {
-  return *server;
-}
+AsyncWebServer Network::getServer() { return *server; }
+NTPClient Network::getNTPClient() { return *timeClient; }
 
 void configModeCallback(AsyncWiFiManager *myWiFiManager) {
   DEBUG_PRINT("Entered config mode");
@@ -18,6 +17,7 @@ void configModeCallback(AsyncWiFiManager *myWiFiManager) {
 void Network::begin() {
   dns = new DNSServer();
   wifiManager = new AsyncWiFiManager(server, dns);
+  timeClient = new NTPClient(ntpUDP, TIMEZONE.toLocal(1));
 
   WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP    
   #ifdef DEBUG
@@ -48,6 +48,8 @@ void Network::loop() {
       connected = true;
       // we're connected so we disable our AP by setting ourselves to station mode
       WiFi.mode(WIFI_STA);
+      // Start NTP client
+      timeClient->begin();
       // register web actions (server will have been reset)
       Web::registerActions(server);
       #ifdef DEBUG
@@ -56,11 +58,16 @@ void Network::loop() {
         DEBUG_PRINT((debug));
       #endif
     }
+    // Sync the time every loop
+    timeClient->update();
   } else {
     lastDisconnected = millis();
-    // If we don't know we're connected then debug and set our flag
+    // If we don't know we're disconnected then
     if( connected ) { 
+      // set our flag to say we're offline
       connected = false;
+      // Stop NTP client
+      timeClient->end();
       #ifdef DEBUG
         char debug[100];
         sprintf(debug, "Disconnected from wifi since %ld", lastDisconnected);
