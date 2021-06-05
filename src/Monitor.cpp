@@ -11,26 +11,62 @@ int wifiCounter = 0;
   int timeCounter = 0;
 #endif
 
+void Monitor::statusFastFlash() { statusFlashState = STATUS_FASTFLASH; }
+void Monitor::statusSlowFlash() { statusFlashState = STATUS_SLOWFLASH; }
+void Monitor::statusOn() { statusFlashState = STATUS_ON; }
+void Monitor::statusOff() { statusFlashState = STATUS_OFF; }
+
 void Monitor::blink(int pin) {
   digitalWrite(pin, !digitalRead(pin));
 }
 
 void Monitor::tick() {
   wifiCounter++;
+  statusCounter++;
 #ifdef DEBUG
   timeCounter++;
 #endif
 
-  int c = (Network::get().isConnected() ? MONITOR_OKCOUNTER : MONITOR_WAITCOUNTER);
+  int c = (Network::get().isConnected() ? MONITOR_NET_OKCOUNTER : MONITOR_NET_WAITCOUNTER);
   if( wifiCounter > c ) {
     wifiCounter = 0;
     blink(PIN_WIFI_LED);
   }
+  if( Network::get().isConnected() ) {
+    switch( Monitor::get().statusFlashState ) {
+    case STATUS_FASTFLASH:
+      if( statusCounter > MONITOR_STATUS_FASTCOUNTER ) {
+        statusCounter = 0;
+        blink(PIN_STATUS_LED);
+      }
+      break;
+    case STATUS_SLOWFLASH:
+      if( statusCounter > MONITOR_STATUS_SLOWCOUNTER ) {
+        statusCounter = 0;
+        blink(PIN_STATUS_LED);
+      }
+      break;
+    case STATUS_ON:
+      statusCounter = 0;
+      digitalWrite(PIN_STATUS_LED, HIGH);
+      break;
+    default:
+      statusCounter = 0;
+      digitalWrite(PIN_STATUS_LED, LOW);
+    }
+  } else {
+    statusCounter = 0;
+    digitalWrite(PIN_STATUS_LED, LOW);
+  }
 
- #ifdef DEBUG
-  if( timeCounter > MONITOR_TIME ) {
+#ifdef DEBUG
+  if( timeCounter > MONITOR_TIMECOUNTER ) {
     timeCounter = 0;
-    DEBUG_PRINT(Network::get().getNTPClient().getFormattedTime());
+    String msg = String();
+    if( Monitor::get().additionalStatus.length() > 0 )
+      msg += Monitor::get().additionalStatus + "\n\t\t";
+    msg += Network::get().getNTPClient().getFormattedTime();
+    DEBUG_PRINT(msg);
   }
 #endif
 }
@@ -40,8 +76,7 @@ void Monitor::begin() {
   pinMode(PIN_STATUS_LED, OUTPUT);
   pinMode(PIN_WIFI_LED, OUTPUT);
 
-  // Status LED is 'OK' is on (HIGH), off (LOW) is something wrong
-  digitalWrite(PIN_STATUS_LED, HIGH);
+  statusOn();
   digitalWrite(PIN_WIFI_LED, HIGH);
 
   // Start the ticker
@@ -49,8 +84,4 @@ void Monitor::begin() {
 }
 
 void Monitor::loop() {
-  // We'll add some to this with logical and but for now just network connectivity
-  bool ok = Network::get().isConnected();
-  
-  digitalWrite(PIN_STATUS_LED, ok);
 }

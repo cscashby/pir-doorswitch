@@ -33,10 +33,22 @@
 #define PIN_WIFI_LED        2   // Builtin ESP-12 LED
 
 // Monitor timings
-#define MONITOR_TICKER      100 // ms base timer
-#define MONITOR_TIME        100 // Counts of ticker to debug print time
-#define MONITOR_OKCOUNTER   20  // Counts of ticker to identify OK
-#define MONITOR_WAITCOUNTER 1   // Counts of ticker to identify 'user intervention required'
+#define MONITOR_TICKER              10   // ms base timer
+#define MONITOR_TIMECOUNTER         500 // Counts of ticker to debug print time
+#define MONITOR_NET_OKCOUNTER       200  // Counts of ticker to identify OK
+#define MONITOR_NET_WAITCOUNTER     10   // Counts of ticker to identify 'network not connected'
+#define MONITOR_STATUS_SLOWCOUNTER  100  // Counts of ticker to identify OK
+#define MONITOR_STATUS_FASTCOUNTER  2    // Counts of ticker to identify activity
+
+// PIR timings
+#define MAIN_TICKER                  10   // ms timer
+#define PIR_TICKER_COUNTER          100  // stabilisation time for PIR
+
+// ==== Main configuration
+// Pins (GPIO numbers) for door control
+#define PIN_RELAY_OUTPUT    5   // D1
+#define PIN_PIR_INPUT       4   // D2
+#define PIN_SWITCH_INPUT    0   // D3
 
 // Localization settings
 // United Kingdom (London, Belfast)
