@@ -25,7 +25,7 @@ void setupLEDstatus() {
     mon.statusOn();
   }
   #ifdef DEBUG
-    mon.additionalStatus = String("Lock ") + String(enabled ? "active" : "inactive");
+    mon.additionalStatus = String("Lock ") + String(enabled ? "will auto-release" : "will not auto-release");
   #endif
 }
 
@@ -54,7 +54,7 @@ void tick() {
         pirState = checkState;
         DEBUG_PRINT(pirState == LOW ? "PIR inactive" : "PIR active");
         // 'press' door button if PIR has gone active (PIN_RELAY_OUTPUT)
-        digitalWrite(PIN_RELAY_OUTPUT, !pirState);
+        digitalWrite(PIN_RELAY_OUTPUT, pirState);
         if (pirState == LOW) {
           setupLEDstatus();
         } else {
@@ -79,7 +79,7 @@ void setup() {
   pinMode(PIN_PIR_INPUT, INPUT);
   pinMode(PIN_RELAY_OUTPUT, OUTPUT);
   pirState = digitalRead(PIN_PIR_INPUT);
-  digitalWrite(PIN_RELAY_OUTPUT, HIGH);
+  digitalWrite(PIN_RELAY_OUTPUT, LOW);
 
   // Start the ticker
   PIRTicker.attach_ms(MAIN_TICKER, tick);
