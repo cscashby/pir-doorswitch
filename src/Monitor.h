@@ -22,6 +22,11 @@ class Monitor {
     String additionalStatus;
   #endif
 
+    String lastUnlockedTime;
+    String lastSetTime;
+    String settingAutoDisableTime = DEFAULT_DISABLE_TIME;
+    bool enabled = false;
+
     static Monitor& get() {
       static Monitor instance;
       return instance;

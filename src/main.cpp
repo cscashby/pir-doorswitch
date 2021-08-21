@@ -14,18 +14,17 @@ static Web& web = Web::get();
 static Monitor& mon = Monitor::get();
 
 Ticker PIRTicker;
-bool enabled = false;
 int pirState, switchState = HIGH;
 int tickerCounter = 0;
 
 void setupLEDstatus() {
-  if( enabled ) {
+  if( mon.enabled ) {
     mon.statusSlowFlash();
   } else {
     mon.statusOn();
   }
   #ifdef DEBUG
-    mon.additionalStatus = String("Lock ") + String(enabled ? "will auto-release" : "will not auto-release");
+    mon.additionalStatus = String("Lock ") + String(mon.enabled ? "will auto-release" : "will not auto-release");
   #endif
 }
 
@@ -33,7 +32,7 @@ void tick() {
   tickerCounter++;
   // If we have no network we defualt to inactivate
   if( !Network::get().isConnected() ) {
-    enabled = false;
+    mon.enabled = false;
     mon.statusOff();
   } else {
     setupLEDstatus();
@@ -43,11 +42,14 @@ void tick() {
       DEBUG_PRINT(switchState == LOW ? "Switch pressed" : "Switch released");
       // We only deal with released switch events which come after pressed
       if (switchState == HIGH) {
-        enabled = !enabled;
+        mon.enabled = !mon.enabled;
+        // If we've just been enabled, set the time stamp
+        if( mon.enabled )
+          mon.lastSetTime = net.getNTPClient().getFormattedTime();
       }
     }
 
-    if (enabled && tickerCounter > PIR_TICKER_COUNTER) {
+    if (mon.enabled && tickerCounter > PIR_TICKER_COUNTER) {
       tickerCounter = 0;
       int checkState = digitalRead(PIN_PIR_INPUT);
       if (checkState != pirState) {
@@ -55,6 +57,7 @@ void tick() {
         DEBUG_PRINT(pirState == LOW ? "PIR inactive" : "PIR active");
         // 'press' door button if PIR has gone active (PIN_RELAY_OUTPUT)
         digitalWrite(PIN_RELAY_OUTPUT, pirState);
+        mon.lastUnlockedTime = net.getNTPClient().getFormattedTime();
         if (pirState == LOW) {
           setupLEDstatus();
         } else {

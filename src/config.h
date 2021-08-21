@@ -50,6 +50,9 @@
 #define PIN_PIR_INPUT       4   // D2
 #define PIN_SWITCH_INPUT    0   // D3
 
+// Auto unlock automatic disable time - default and current setting
+#define DEFAULT_DISABLE_TIME        "22:00:00"
+
 // Localization settings
 // United Kingdom (London, Belfast)
 #define BST                 (TimeChangeRule){"BST", Last, Sun, Mar, 1, 60}  // British Summer Time

@@ -59,6 +59,15 @@ void Monitor::tick() {
     digitalWrite(PIN_STATUS_LED, LOW);
   }
 
+  // Check to see if we should disable ourselves (are we at disable time?)
+  // NOTE: This is OK as tick() is considerably quicker than once per secon
+  // it would be nicer to do this as a time variable and parse the string / use <
+  if( Monitor::get().enabled &&
+      Network::get().getNTPClient().getFormattedTime().equals(Monitor::get().settingAutoDisableTime) ) {
+    DEBUG_PRINT("Disable time reached - disabling auto unlock");
+    Monitor::get().enabled = false;
+  }
+
 #ifdef DEBUG
   if( timeCounter > MONITOR_TIMECOUNTER ) {
     timeCounter = 0;
