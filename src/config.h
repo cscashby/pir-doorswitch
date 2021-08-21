@@ -56,11 +56,12 @@
 #define GMT                 (TimeChangeRule){"GMT", Last, Sun, Mar, 1, 60}  // Standard Time
 #define TIMEZONE            Timezone(BST, GMT)
 
-// ==== Debug stuff
+// ==== Debug stuff (with NTP time)
 #ifdef DEBUG
+  // use millis() if no NTP
   #define DEBUG_PRINT(X) if (Serial) { \
     Serial.print("D "); \
-    Serial.print(millis()); \
+    Serial.print(Network::get().getNTPClient().getFormattedTime()); \
     Serial.print(": "); \
     Serial.print(X); \
     Serial.print(" ("); \
@@ -75,9 +76,10 @@
   #define DEBUG_PRINT(X)
 #endif
 #ifdef INFO
+  // use millis() if no NTP
   #define INFO_PRINT(X) if (Serial) { \
     Serial.print("I "); \
-    Serial.print(millis()); \
+    Serial.print(Network::get().getNTPClient().getFormattedTime()); \
     Serial.print(": "); \
     Serial.print(X); \
     Serial.print(" ("); \
@@ -92,9 +94,10 @@
   #define INFO_PRINT(X)
 #endif
 #ifdef WARN
+  // use millis() if no NTP
   #define WARN_PRINT(X) if (Serial) { \
     Serial.print("W "); \
-    Serial.print(millis()); \
+    Serial.print(Network::get().getNTPClient().getFormattedTime()); \
     Serial.print(": "); \
     Serial.print(X); \
     Serial.print(" ("); \
@@ -107,9 +110,10 @@
 #else
   #define WARN_PRINT(X)
 #endif
+// use millis() if no NTP
 #define ERROR_PRINT(X) if (Serial) { \
   Serial.print("E "); \
-  Serial.print(millis()); \
+  Serial.print(Network::get().getNTPClient().getFormattedTime()); \
   Serial.print(": "); \
   Serial.print(X); \
   Serial.print(" ("); \

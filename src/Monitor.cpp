@@ -64,8 +64,7 @@ void Monitor::tick() {
     timeCounter = 0;
     String msg = String();
     if( Monitor::get().additionalStatus.length() > 0 )
-      msg += Monitor::get().additionalStatus + "\n\t\t";
-    msg += Network::get().getNTPClient().getFormattedTime();
+      msg += Monitor::get().additionalStatus + "\t";
     DEBUG_PRINT(msg);
   }
 #endif
