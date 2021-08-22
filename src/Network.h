@@ -27,6 +27,8 @@ class Network {
     bool isConnected() { return connected; }
     bool isPortalActive() { return portalActive; }
 
+    String getDateTime();
+
     static AsyncWebServer getServer();
     NTPClient getNTPClient();
 

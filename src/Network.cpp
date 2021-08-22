@@ -14,6 +14,11 @@ void configModeCallback(AsyncWiFiManager *myWiFiManager) {
   DEBUG_PRINT("Entered config mode");
 }
 
+String Network::getDateTime() {
+  time_t time = getNTPClient().getEpochTime();
+  return ctime(&time);
+}
+
 void Network::begin() {
   dns = new DNSServer();
   wifiManager = new AsyncWiFiManager(server, dns);

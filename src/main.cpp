@@ -45,7 +45,7 @@ void tick() {
         mon.enabled = !mon.enabled;
         // If we've just been enabled, set the time stamp
         if( mon.enabled )
-          mon.lastSetTime = net.getNTPClient().getFormattedTime();
+          mon.lastSetTime = net.getDateTime();
       }
     }
 
@@ -57,7 +57,7 @@ void tick() {
         DEBUG_PRINT(pirState == LOW ? "PIR inactive" : "PIR active");
         // 'press' door button if PIR has gone active (PIN_RELAY_OUTPUT)
         digitalWrite(PIN_RELAY_OUTPUT, pirState);
-        mon.lastUnlockedTime = net.getNTPClient().getFormattedTime();
+        mon.lastUnlockedTime = net.getDateTime();
         if (pirState == LOW) {
           setupLEDstatus();
         } else {

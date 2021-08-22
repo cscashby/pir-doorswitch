@@ -41,7 +41,7 @@ void Web::registerActions(AsyncWebServer *server) {
   // Status codes
   // - device time
   server->on("/getTime", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(200, "text/plain", Network::get().getNTPClient().getFormattedTime());
+    request->send(200, "text/plain", Network::get().getDateTime());
   });
   // - last unlock time
   server->on("/getLastUnlockedTime", HTTP_GET, [](AsyncWebServerRequest *request) {
